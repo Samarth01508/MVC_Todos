@@ -1,5 +1,3 @@
-//localStorage.clear();
-//let localStorageTaskList = localStorage.getItem("tasks");
 export default class View {
   constructor() {
     let todos = document.getElementById("To-do-list");
@@ -56,7 +54,6 @@ export default class View {
         return;
       } else {
         handler(taskName);
-        //localStorage.setItem("tasks", JSON.stringify(taskList));
         task_input_element.value = "";
       }
     });
