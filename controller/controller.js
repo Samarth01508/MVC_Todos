@@ -6,10 +6,12 @@ class Controller {
     this.model = model;
     this.view = view;
     this.displayTodo(this.model.taskList);
-    this.model.bindDisplayTodo(this.displayTodo);
+    this.model.onChangeInTodos(this.displayTodo);
     this.view.addTaskEventListener(this.handleAddTask);
     this.view.removeEventListener(this.handleRemoveTask);
     this.view.statusButtonEventListener(this.handleChangeTaskStatus);
+    this.view.editTaskNameEventListener();
+    this.view.saveTaskNameEventListener(this.handleSaveTaskName);
   }
 
   displayTodo = (taskList) => {
@@ -30,6 +32,10 @@ class Controller {
 
   handleChangeTaskStatus = (taskId, newStatus) => {
     this.model.changeTaskStatus(taskId, newStatus);
+  };
+
+  handleSaveTaskName = (taskId, newTaskName) => {
+    this.model.saveTaskName(taskId, newTaskName);
   };
 }
 

@@ -63,10 +63,12 @@ export default class View {
     let taskElement = document.createElement("li");
     taskElement.setAttribute("id", taskObject.id);
 
-    let taskNameElement = this.createNameElement(taskObject);
+    let tasknameAndEditSpan = document.createElement("span");
+    tasknameAndEditSpan.setAttribute("class", "task-name-span");
+    this.createLabelAndEditElement(tasknameAndEditSpan, taskObject.taskName);
     let removeButton = this.createRemoveButton();
     let statusButton = this.createStatusButton(status);
-    taskElement.appendChild(taskNameElement);
+    taskElement.appendChild(tasknameAndEditSpan);
     taskElement.appendChild(removeButton);
     taskElement.appendChild(statusButton);
 
@@ -87,52 +89,69 @@ export default class View {
     return;
   };
 
-  createNameElement = (taskObject) => {
-    let spanElement = document.createElement("span");
-    spanElement.setAttribute("class", "task-name-span");
-    this.createEditSpan(taskObject, spanElement);
-    return spanElement;
-  };
-
-  createEditSpan = (taskObject, spanElement) => {
+  createLabelAndEditElement = (spanElement, taskName) => {
     let taskLabelElement = document.createElement("label");
-    taskLabelElement.innerHTML = `${taskObject.taskName}`;
+    taskLabelElement.innerHTML = taskName;
     taskLabelElement.setAttribute("class", "task-name-label");
     let editButton = document.createElement("button");
     editButton.innerHTML = "Edit";
     editButton.setAttribute("class", "edit-btn");
     spanElement.appendChild(taskLabelElement);
     spanElement.appendChild(editButton);
-
-    this.addEditEvent(taskObject, spanElement, editButton, taskLabelElement);
   };
 
-  addEditEvent = (taskObject, spanElement, editBtn, taskLabelElement) => {
-    editBtn.addEventListener("click", () => {
-      taskLabelElement.remove();
-      editBtn.remove();
-      this.createSaveSpan(taskObject, spanElement);
+  editTaskNameEventListener = () => {
+    let divContainer = document.getElementById("task-div-container");
+    divContainer.addEventListener("click", (event) => {
+      if (event.target.className == "edit-btn") {
+        let taskElement = event.target.parentElement.parentElement;
+        let taskid = taskElement.id;
+        let labelAndEditSpan = taskElement.querySelector("span.task-name-span");
+        let editBtn = taskElement.querySelector(
+          "span.task-name-span button.edit-btn"
+        );
+        let labelElement = taskElement.querySelector(
+          "span.task-name-span label.task-name-label"
+        );
+        let taskName = labelElement.innerHTML;
+        editBtn.remove();
+        labelElement.remove();
+        this.createInputAndSaveElement(labelAndEditSpan, taskName);
+      }
     });
   };
 
-  createSaveSpan = (taskObject, spanElement) => {
+  createInputAndSaveElement = (spanElement, taskName) => {
     let inputElement = document.createElement("input");
-    inputElement.value = taskObject.taskName;
+    inputElement.setAttribute("class", "task-edit-input");
+    inputElement.value = taskName;
     let saveBtn = document.createElement("button");
     saveBtn.innerHTML = "Save";
     saveBtn.setAttribute("class", "save-btn");
     spanElement.appendChild(inputElement);
     spanElement.appendChild(saveBtn);
     inputElement.focus();
-    this.addSaveEvent(taskObject, spanElement, saveBtn, inputElement);
   };
 
-  addSaveEvent = (taskObject, spanElement, saveBtn, inputElement) => {
-    inputElement.addEventListener("blur", () => {
-      taskObject.taskName = inputElement.value;
-      inputElement.remove();
-      saveBtn.remove();
-      this.createEditSpan(taskObject, spanElement);
+  saveTaskNameEventListener = (saveTaskNameHandler) => {
+    let divContainer = document.getElementById("task-div-container");
+    divContainer.addEventListener("click", (event) => {
+      if (event.target.className == "save-btn") {
+        let taskElement = event.target.parentElement.parentElement;
+        let taskid = taskElement.id;
+        let inputAndSaveSpan = taskElement.querySelector("span.task-name-span");
+        let saveBtn = taskElement.querySelector(
+          "span.task-name-span button.save-btn"
+        );
+        let inputElement = taskElement.querySelector(
+          "span.task-name-span input.task-edit-input"
+        );
+        let newTaskName = inputElement.value;
+        saveBtn.remove();
+        inputElement.remove();
+        this.createLabelAndEditElement(inputAndSaveSpan, newTaskName);
+        saveTaskNameHandler(taskid, newTaskName);
+      }
     });
   };
 
@@ -160,7 +179,7 @@ export default class View {
     return statusButton;
   };
 
-  statusButtonEventListener(statusHandler) {
+  statusButtonEventListener = (statusHandler) => {
     let divContainer = document.getElementById("task-div-container");
     divContainer.addEventListener("click", (event) => {
       if (event.target.className == "Complete-btn") {
@@ -171,7 +190,7 @@ export default class View {
         statusHandler(taskId, 0);
       }
     });
-  }
+  };
 
   emptyDivs = () => {
     let incompleteDiv = document.getElementById("Incomplete-task-list");

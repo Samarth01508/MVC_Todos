@@ -22,7 +22,7 @@ export default class Model {
     };
   }
 
-  bindDisplayTodo = (callback) => {
+  onChangeInTodos = (callback) => {
     this.displayTodo = callback;
   };
 
@@ -33,6 +33,11 @@ export default class Model {
 
   changeTaskStatus(taskId,newTaskStatus){
     this.taskList[taskId].status=newTaskStatus;
+    this.commitChange(this.taskList);
+  }
+
+  saveTaskName(taskId,newTaskName){
+    this.taskList[taskId].taskName=newTaskName;
     this.commitChange(this.taskList);
   }
 
