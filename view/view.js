@@ -209,4 +209,9 @@ export default class View {
     completedDiv.appendChild(completedTasksHeading);
     return;
   };
+
+  displayTasks = (taskObject) => {
+    if (taskObject.status == 0) this.markTaskIncomplete(taskObject);
+    else this.markTaskComplete(taskObject);
+  };
 }
